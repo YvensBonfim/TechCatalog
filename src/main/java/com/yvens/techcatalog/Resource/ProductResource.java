@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
-@RequestMapping(value = "/categories")
+@RequestMapping(value = "/products")
 public class ProductResource {
 
     @Autowired
