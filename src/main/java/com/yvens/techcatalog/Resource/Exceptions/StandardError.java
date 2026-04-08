@@ -1,4 +1,4 @@
-package com.yvens.techcatalog.Resource;
+package com.yvens.techcatalog.Resource.Exceptions;
 
 import java.time.Instant;
 
