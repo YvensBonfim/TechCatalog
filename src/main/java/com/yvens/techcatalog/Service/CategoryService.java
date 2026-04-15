@@ -6,15 +6,14 @@ import com.yvens.techcatalog.Service.Exception.ResourceNotFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import  org.springframework.data.domain.Page;
 
 import com.yvens.techcatalog.DTO.CategoryDto;
 import com.yvens.techcatalog.Entity.Category;
@@ -25,12 +24,12 @@ public class CategoryService {
     public CategoryRepositoty repositoty;
 
     @Transactional(readOnly = true)
-    public List<CategoryDto> findAll() {
-        List<Category> list = repositoty.findAll();
+    public Page<CategoryDto> findAllPaged(PageRequest pageRequest) {
+        Page<Category> list = repositoty.findAll(pageRequest);
 
-        List<CategoryDto> listDto = list.stream().map(e -> new CategoryDto(e)).collect(Collectors.toList());
+      return list.map(x->new CategoryDto(x));
 
-        return listDto;
+      
     }
 
     @Transactional(readOnly = true)
@@ -83,4 +82,5 @@ public class CategoryService {
         }
 
     }
+
 }
