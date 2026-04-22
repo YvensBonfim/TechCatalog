@@ -10,7 +10,7 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,8 +31,8 @@ public class ProductService {
     public CategoryRepositoty categoryRepositoty;
 
     @Transactional(readOnly = true)
-    public Page<ProductDto> findAllPaged(PageRequest pageRequest) {
-        Page<Product> list = repositoty.findAll(pageRequest);
+    public Page<ProductDto> findAllPaged(Pageable pageable) {
+        Page<Product> list = repositoty.findAll(pageable);
 
         return list.map(x -> new ProductDto(x));
 
