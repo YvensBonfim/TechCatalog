@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping(value = "/products")
-public class ProductyResource {
+public class ProductResource {
 
     @Autowired
     private ProductService service;
