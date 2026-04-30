@@ -1,4 +1,4 @@
-package com.yvens.techcatalog.Service.resource;
+package com.yvens.techcatalog.resource;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -32,7 +32,7 @@ import com.yvens.techcatalog.Service.Exception.DataBaseException;
 import com.yvens.techcatalog.Service.Exception.ResourceNotFoundException;
 
 @WebMvcTest(ProductResource.class)
-public class productResourceTest { // Nome corrigido para PascalCase
+public class productResourceTest { 
 
     @Autowired
     private MockMvc mockMvc;
