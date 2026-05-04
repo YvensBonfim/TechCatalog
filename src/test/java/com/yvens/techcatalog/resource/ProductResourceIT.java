@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yvens.techcatalog.DTO.ProductDto;
@@ -19,7 +20,7 @@ import com.yvens.techcatalog.Repository.Factory;
 
 import org.springframework.http.MediaType;
 
-import jakarta.transaction.Transactional;
+
 
 @SpringBootTest
 @AutoConfigureMockMvc

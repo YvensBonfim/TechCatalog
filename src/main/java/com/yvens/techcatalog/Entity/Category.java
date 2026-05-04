@@ -1,12 +1,15 @@
 package com.yvens.techcatalog.Entity;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -25,7 +28,9 @@ public class Category {
     @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
     private Instant updateAt;
 
-    
+
+    @ManyToMany(mappedBy = "categories")
+    Set<Product> products = new HashSet<>();
 
     public Category() {
     }
@@ -51,25 +56,23 @@ public class Category {
         this.name = name;
     }
 
-       public Instant getCreatedAt() {
+    public Instant getCreatedAt() {
         return createdAt;
     }
 
     public Instant getUpdateAt() {
         return updateAt;
     }
-    @PrePersist
-    public void prePersist(){
-        createdAt=Instant.now();
-    }
-    @PreUpdate
-    public void PreUpdate(){
-        updateAt=Instant.now();
-    }
-   
 
-    
-    
+    @PrePersist
+    public void prePersist() {
+        createdAt = Instant.now();
+    }
+
+    @PreUpdate
+    public void PreUpdate() {
+        updateAt = Instant.now();
+    }
 
     @Override
     public int hashCode() {
@@ -100,7 +103,5 @@ public class Category {
     public String toString() {
         return "Category [id=" + id + ", name=" + name + "]";
     }
-
- 
 
 }
