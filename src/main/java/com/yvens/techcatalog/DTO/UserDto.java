@@ -5,11 +5,19 @@ import java.util.Set;
 
 import com.yvens.techcatalog.Entity.User;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
+
 public class UserDto {
 
     private Long id;
+    
+    @NotBlank(message = "campo Obrigatorio")
     private String firstName;
     private String lastName;
+
+    @Email(message = "Favor entrar com E-mail valido")
     private String email;
 
     Set<RoleDto> roles= new HashSet<>();
@@ -70,6 +78,8 @@ public class UserDto {
     public Set<RoleDto> getRoles() {
         return roles;
     }
+
+
 
    
 }
