@@ -7,6 +7,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.yvens.techcatalog.DTO.ProductDto;
 import com.yvens.techcatalog.DTO.UserDto;
 import com.yvens.techcatalog.DTO.UserInsertDto;
+import com.yvens.techcatalog.DTO.UserUpdateDto;
 import com.yvens.techcatalog.Service.UserService;
 
 import jakarta.validation.Valid;
@@ -55,11 +56,11 @@ public class UserResource {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> update(@PathVariable Long id,@Valid @RequestBody UserDto dto) {
+    public ResponseEntity<UserDto> update(@PathVariable Long id,@Valid @RequestBody UserUpdateDto dto) {
 
-        dto = service.update(dto, id);
+       UserDto newDto = service.update(dto, id);
 
-        return ResponseEntity.ok().body(dto);
+        return ResponseEntity.ok().body(newDto);
     }
 
     @DeleteMapping("/{id}")

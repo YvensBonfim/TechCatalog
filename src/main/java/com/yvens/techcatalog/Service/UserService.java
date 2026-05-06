@@ -20,6 +20,7 @@ import org.springframework.data.domain.Page;
 import com.yvens.techcatalog.DTO.RoleDto;
 import com.yvens.techcatalog.DTO.UserDto;
 import com.yvens.techcatalog.DTO.UserInsertDto;
+import com.yvens.techcatalog.DTO.UserUpdateDto;
 import com.yvens.techcatalog.Entity.Role;
 import com.yvens.techcatalog.Entity.User;
 
@@ -66,7 +67,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserDto update(UserDto dto, Long id) {
+    public UserDto update(UserUpdateDto dto, Long id) {
         try {
             User entity = repositoty.getReferenceById(id);
              copyDtoToEntity(dto, entity);
