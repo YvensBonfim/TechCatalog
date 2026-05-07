@@ -7,11 +7,15 @@ import com.yvens.techcatalog.Service.Exception.ResourceNotFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,15 +27,16 @@ import com.yvens.techcatalog.DTO.UserInsertDto;
 import com.yvens.techcatalog.DTO.UserUpdateDto;
 import com.yvens.techcatalog.Entity.Role;
 import com.yvens.techcatalog.Entity.User;
+import com.yvens.techcatalog.Projection.UserDetailsProjection;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserRepository repositoty;
+    public UserRepository repository;
 
     @Autowired
    private roleRepository roleRepository;
@@ -40,7 +45,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public Page<UserDto> findAllPaged(Pageable pageable) {
-        Page<User> list = repositoty.findAll(pageable);
+        Page<User> list = repository.findAll(pageable);
 
         return list.map(x -> new UserDto(x));
 
@@ -49,7 +54,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserDto findById(Long id) {
 
-        Optional<User> obj = repositoty.findById(id);
+        Optional<User> obj = repository.findById(id);
         User entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
         return new UserDto(entity);
 
@@ -61,7 +66,7 @@ public class UserService {
         User entity = new User();
         entity.setPassword(passwordEncoder.encode(dto.getPassword()));
         copyDtoToEntity(dto, entity);
-        entity = repositoty.save(entity);
+        entity = repository.save(entity);
         return new UserDto(entity);
 
     }
@@ -69,9 +74,9 @@ public class UserService {
     @Transactional
     public UserDto update(UserUpdateDto dto, Long id) {
         try {
-            User entity = repositoty.getReferenceById(id);
+            User entity = repository.getReferenceById(id);
              copyDtoToEntity(dto, entity);
-            entity = repositoty.save(entity);
+            entity = repository.save(entity);
             return new UserDto(entity);
         } catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException("id not found" + id);
@@ -83,12 +88,12 @@ public class UserService {
     @Transactional(propagation = Propagation.SUPPORTS)
     public void delete(Long id) {
 
-        if (!repositoty.existsById(id)) {
+        if (!repository.existsById(id)) {
 
             throw new ResourceNotFoundException("Id not found");
         }
         try {
-            repositoty.deleteById(id);
+            repository.deleteById(id);
 
         } catch (DataIntegrityViolationException e) {
 
@@ -114,4 +119,26 @@ public class UserService {
         }
     }
 
-}
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+      
+      
+	
+		
+		List<UserDetailsProjection> result = repository.searchUserAndRolesByEmail(username);
+		if (result.size() == 0) {
+			throw new UsernameNotFoundException("Email not found");
+		}
+		
+		User user = new User();
+		user.setEmail(result.get(0).getUsername());
+		user.setPassword(result.get(0).getPassword());
+		for (UserDetailsProjection projection : result) {
+			user.addRole(new Role(projection.getRoleId(), projection.getAuthority()));
+		}
+		
+		return user;
+    }
+    }
+
+

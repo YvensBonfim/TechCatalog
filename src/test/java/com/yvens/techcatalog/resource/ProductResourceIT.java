@@ -17,10 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yvens.techcatalog.DTO.ProductDto;
 import com.yvens.techcatalog.Repository.Factory;
+import com.yvens.techcatalog.Repository.tests.TokenUtil;
 
 import org.springframework.http.MediaType;
-
-
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -30,18 +29,27 @@ public class ProductResourceIT {
     @Autowired
     private MockMvc mockMvc;
 
-        @Autowired
+    @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private TokenUtil tokenUtil;
 
     private long existingId;
     private long nonExistingId;
     private long countTotalProduct;
 
+    private String username, password, bearerToken;
+
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         existingId = 1L;
         nonExistingId = 1000L;
         countTotalProduct = 25L;
+        username="maria@gmail.com";
+        password="123456";
+
+        bearerToken=tokenUtil.obtainAccessToken(mockMvc, username, password);
 
     }
 
@@ -57,16 +65,17 @@ public class ProductResourceIT {
         result.andExpect(jsonPath("$.content[0].name").value("Macbook Pro"));
     }
 
-      @Test
+    @Test
     public void updateShouldReturnProductDtoWhenIdExists() throws Exception {
 
-        ProductDto productDto =Factory.createProductDto();
+        ProductDto productDto = Factory.createProductDto();
 
         String jsonBody = objectMapper.writeValueAsString(productDto);
 
-        String expectedName =productDto.getName();
+        String expectedName = productDto.getName();
 
         ResultActions result = mockMvc.perform(put("/products/{id}", existingId)
+                .header("Authorization", "Bearer " + bearerToken)
                 .content(jsonBody)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
@@ -78,20 +87,20 @@ public class ProductResourceIT {
 
     }
 
-     @Test
+    @Test
     public void updateShouldReturnNotFoundWhenIdDoesntExists() throws Exception {
 
-        ProductDto productDto =Factory.createProductDto();
+        ProductDto productDto = Factory.createProductDto();
 
         String jsonBody = objectMapper.writeValueAsString(productDto);
 
-       
-
         ResultActions result = mockMvc.perform(put("/products/{id}", nonExistingId)
+                .header("Authorization", "Bearer " + bearerToken)
                 .content(jsonBody)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
 
         result.andExpect(status().isNotFound());
 
-}}
+    }
+}

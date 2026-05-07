@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import com.yvens.techcatalog.DTO.ProductDto;
 import com.yvens.techcatalog.Repository.ProductRepositoty;
@@ -39,6 +40,11 @@ public class ProductServiceIntegration {
         countTotalProduct = 25L;
 
     }
+
+
+ 
+
+
 
     @Test
     public void deleteShouldDeleteResourceWhenIdExist() {
@@ -71,17 +77,15 @@ public class ProductServiceIntegration {
         assertEquals(countTotalProduct, result.getTotalElements());
 
     }
-    @Test
-    public void findAllPagedShouldReturnEmptyPagewhenPagedoesntExist(){
-        
+   @Test
+public void findAllPagedShouldReturnEmptyPagewhenPagedoesntExist1() {
+    // Pedindo a página 50 (que não existe, já que só tem 25 produtos)
+    PageRequest pageRequest = PageRequest.of(50, 10); 
 
-      PageRequest pageRequest = PageRequest.of(0,10);
+    Page<ProductDto> result = service.findAllPaged(pageRequest);
 
-        Page<ProductDto> result =service.findAllPaged(pageRequest);
-
-        assertTrue(result.isEmpty());
-    
-    }
+    assertTrue(result.isEmpty());
+}
     @Test
     public void findAllPagedShouldReturnOrderedPageWhenSortedByName(){
         
@@ -96,6 +100,8 @@ public class ProductServiceIntegration {
         assertEquals("PC Gamer Alfa", result.getContent().get(2).getName());
     
     }
+
+
 
 
 }

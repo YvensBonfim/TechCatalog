@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,21 +46,27 @@ public class ProductResource {
 
     }
 
+   // Correto:
+@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OPERATOR')")
     @PostMapping
-    public ResponseEntity<ProductDto> insert(@Valid@RequestBody ProductDto dto) {
+    public ResponseEntity<ProductDto> insert(@Valid @RequestBody ProductDto dto) {
         dto = service.insert(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
         return ResponseEntity.created(uri).body(dto);
     }
 
+   // Correto:
+@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OPERATOR')")
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDto> update( @PathVariable Long id, @Valid @RequestBody ProductDto dto) {
+    public ResponseEntity<ProductDto> update(@PathVariable Long id, @Valid @RequestBody ProductDto dto) {
 
         dto = service.update(dto, id);
 
         return ResponseEntity.ok().body(dto);
     }
 
+    // Correto:
+@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OPERATOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ProductDto> update(@PathVariable Long id) {
 
