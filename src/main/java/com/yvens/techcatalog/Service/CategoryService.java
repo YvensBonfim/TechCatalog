@@ -6,7 +6,10 @@ import com.yvens.techcatalog.Service.Exception.ResourceNotFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
@@ -24,10 +27,10 @@ public class CategoryService {
     public CategoryRepositoty repositoty;
 
     @Transactional(readOnly = true)
-    public Page<CategoryDto> findAllPaged(Pageable pageable) {
-        Page<Category> list = repositoty.findAll(pageable);
+    public List<CategoryDto> findAll( ) {
+        List<Category> list = repositoty.findAll();
 
-      return list.map(x->new CategoryDto(x));
+      return list.stream().map(x->new CategoryDto(x)).toList();
 
       
     }

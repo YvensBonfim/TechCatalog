@@ -1,10 +1,12 @@
 package com.yvens.techcatalog.Resource;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.yvens.techcatalog.DTO.ProductDto;
+import com.yvens.techcatalog.Projection.ProductProjection;
 import com.yvens.techcatalog.Service.ProductService;
 
 import jakarta.validation.Valid;
@@ -30,11 +32,13 @@ public class ProductResource {
     private ProductService service;
 
     @GetMapping
-    public ResponseEntity<Page<ProductDto>> findAll(Pageable pageable)
+    public ResponseEntity<Page<ProductDto>> findAll(@RequestParam(value = "name", defaultValue = "") String name,
+    @RequestParam(value = "categoryId", defaultValue = "0")String categoryId ,
+    Pageable pageable)
 
     {
 
-        Page<ProductDto> list = service.findAllPaged(pageable);
+        Page<ProductDto> list = service.findAllPaged(name, categoryId, pageable);
         return ResponseEntity.ok().body(list);
 
     }

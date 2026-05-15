@@ -7,6 +7,8 @@ import com.yvens.techcatalog.Service.Exception.ResourceNotFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,11 +17,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import com.yvens.techcatalog.DTO.CategoryDto;
 import com.yvens.techcatalog.DTO.ProductDto;
 import com.yvens.techcatalog.Entity.Category;
 import com.yvens.techcatalog.Entity.Product;
+import com.yvens.techcatalog.Projection.ProductProjection;
 
 @Service
 public class ProductService {
@@ -32,7 +37,7 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public Page<ProductDto> findAllPaged(Pageable pageable) {
-        Page<Product> list = repositoty.findAll(pageable);
+       Page<Product> list = repositoty.findAll(pageable);
 
         return list.map(x -> new ProductDto(x));
 
@@ -104,5 +109,30 @@ public class ProductService {
 
         }
     }
+
+ 
+
+    @Transactional(readOnly = true)
+    public Page<ProductDto> findAllPaged(String name, String categoryId,Pageable pageable) {
+
+       
+     
+        List<Long> categoryIds=Arrays.asList();
+        if (!"0".equals(categoryId)) {
+        categoryIds=Arrays.asList(categoryId.split(",")).stream().map(x->Long.parseLong(x)).toList();
+        }
+
+       Page<ProductProjection> page =repositoty.searchProducts(categoryIds, name, pageable);
+       List<Long> productId =page.map(x->x.getId()).toList();
+
+       List<Product> entities =repositoty.searchProductswithcategories(productId);
+       List<ProductDto> dtos = entities.stream().map(p->new ProductDto(p,p.getCategories())).toList();
+
+       Page<ProductDto> pageDto =new PageImpl<>(dtos,page.getPageable(),page.getTotalElements());
+
+       return pageDto;
+    }
+
+   
 
 }

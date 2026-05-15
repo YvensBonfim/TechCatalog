@@ -8,6 +8,8 @@ import com.yvens.techcatalog.DTO.CategoryDto;
 import com.yvens.techcatalog.Service.CategoryService;
 
 import java.net.URI;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,11 +30,11 @@ public class CategoryResource {
     private CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<Page<CategoryDto>> findAll(Pageable pageable)
+    public ResponseEntity<List<CategoryDto>> findAll( )
 
     {
 
-        Page<CategoryDto> list = categoryService.findAllPaged(pageable);
+        List<CategoryDto> list = categoryService.findAll();
         return ResponseEntity.ok().body(list);
 
     }
@@ -44,7 +46,8 @@ public class CategoryResource {
 
     }
 
-   // Correto:
+   
+    
 @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OPERATOR')")
     @PostMapping
     public ResponseEntity<CategoryDto> insert(@RequestBody CategoryDto dto) {
@@ -53,7 +56,8 @@ public class CategoryResource {
         return ResponseEntity.created(uri).body(dto);
     }
 
-   // Correto:
+   
+    
 @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OPERATOR')")
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDto> update(@PathVariable Long id, @RequestBody CategoryDto dto) {
@@ -62,7 +66,8 @@ public class CategoryResource {
 
         return ResponseEntity.ok().body(dto);
     }
- // Correto:
+
+    
 @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OPERATOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<CategoryDto> update(@PathVariable Long id) {
