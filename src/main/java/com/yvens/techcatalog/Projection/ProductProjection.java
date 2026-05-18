@@ -1,8 +1,8 @@
 package com.yvens.techcatalog.Projection;
 
-public interface ProductProjection {
+public interface ProductProjection extends IdProjection<Long>{
 
-    Long getId();
+   
     String getName();
 
 }

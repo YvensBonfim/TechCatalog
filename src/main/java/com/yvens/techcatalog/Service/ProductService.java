@@ -4,6 +4,7 @@ import com.yvens.techcatalog.Repository.CategoryRepositoty;
 import com.yvens.techcatalog.Repository.ProductRepositoty;
 import com.yvens.techcatalog.Service.Exception.DataBaseException;
 import com.yvens.techcatalog.Service.Exception.ResourceNotFoundException;
+import com.yvens.techcatalog.Util.Utils;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -112,6 +113,7 @@ public class ProductService {
 
  
 
+    @SuppressWarnings("unchecked")
     @Transactional(readOnly = true)
     public Page<ProductDto> findAllPaged(String name, String categoryId,Pageable pageable) {
 
@@ -126,6 +128,7 @@ public class ProductService {
        List<Long> productId =page.map(x->x.getId()).toList();
 
        List<Product> entities =repositoty.searchProductswithcategories(productId);
+       entities =(List<Product>) Utils.replace(page.getContent(),entities);
        List<ProductDto> dtos = entities.stream().map(p->new ProductDto(p,p.getCategories())).toList();
 
        Page<ProductDto> pageDto =new PageImpl<>(dtos,page.getPageable(),page.getTotalElements());

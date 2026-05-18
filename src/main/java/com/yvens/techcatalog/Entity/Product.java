@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.yvens.techcatalog.Projection.IdProjection;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,7 +18,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tb_product")
-public class Product {
+public class Product implements IdProjection<Long> {
 
 
     @Id
@@ -46,7 +48,7 @@ public class Product {
         this.imgUrl = imgUrl;
         this.date = date;
     }
-
+    @Override
     public Long getId() {
         return id;
     }
