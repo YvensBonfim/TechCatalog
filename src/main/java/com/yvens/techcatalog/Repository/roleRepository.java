@@ -9,5 +9,7 @@ import com.yvens.techcatalog.Entity.Role;
 
 public interface roleRepository  extends JpaRepository<Role, Long>{
 
+    Role findByAuthority(String authority);
+
     
 }

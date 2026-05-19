@@ -39,7 +39,7 @@ public class UserService implements UserDetailsService {
     public UserRepository repository;
 
     @Autowired
-   private roleRepository roleRepository;
+   private roleRepository rolerepository;
 
   
 
@@ -66,6 +66,9 @@ public class UserService implements UserDetailsService {
         User entity = new User();
         entity.setPassword(passwordEncoder.encode(dto.getPassword()));
         copyDtoToEntity(dto, entity);
+        entity.getRoles().clear();
+        Role role =rolerepository.findByAuthority("ROLE_OPERATOR");
+        entity.getRoles().add(role);
         entity = repository.save(entity);
         return new UserDto(entity);
 
@@ -113,7 +116,7 @@ public class UserService implements UserDetailsService {
 
         entity.getRoles().clear();
         for (RoleDto roleDto : dto.getRoles()) {
-            Role role =roleRepository.getReferenceById(roleDto.getId());
+            Role role =rolerepository.getReferenceById(roleDto.getId());
             entity.getRoles().add(role);
 
         }

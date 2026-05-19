@@ -50,8 +50,7 @@ public class ProductResource {
 
     }
 
-   // Correto:
-@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OPERATOR')")
+  
     @PostMapping
     public ResponseEntity<ProductDto> insert(@Valid @RequestBody ProductDto dto) {
         dto = service.insert(dto);
