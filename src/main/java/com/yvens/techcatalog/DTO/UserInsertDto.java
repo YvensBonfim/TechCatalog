@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Size;
 public class UserInsertDto extends UserDto{
 
     @NotBlank(message = "campo obrigatorio")
-    @Size(min=8, message="dev ter no minimo 8 caracteres")
+    @Size(min=8, message="deve ter no minimo 8 caracteres")
     private String password;
 
 
