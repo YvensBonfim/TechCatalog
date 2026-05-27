@@ -26,10 +26,16 @@ public class EmailService {
             message.setSubject(subject);
             message.setText(body);
             emailSender.send(message);
-        } 
-        catch (MailException e){
-        	throw new EmailException("Failed to send email");
-        } 
+       } catch (Exception e) {
+  
+    System.out.println("====== ERRO REAL DO SMTP ======");
+    e.printStackTrace();
+    System.out.println("===============================");
+    
+    throw new EmailException("Failed to send email");
+
+   
+}
     }
 } 
     

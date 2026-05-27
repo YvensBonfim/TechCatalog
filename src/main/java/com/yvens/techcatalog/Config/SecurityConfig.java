@@ -18,23 +18,27 @@ public class SecurityConfig {
     @Bean
     @Order(3)
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         
-        // Desativa CSRF (comum para APIs Stateless/JWT)
+        
+     
         http.csrf(csrf -> csrf.disable());
 
         http.authorizeHttpRequests(auth -> auth
-            // Resolve o aviso de deprecation: use apenas strings para o H2
+          
             .requestMatchers("/h2-console/**").permitAll()
             
-            // Libera Categorias e Produtos para que o @PreAuthorize no Resource decida quem entra
+          
             .requestMatchers("/categories/**").permitAll()
             .requestMatchers("/products/**").permitAll()
+            .requestMatchers("/auth/recover-token", "/auth/**").permitAll()
+            .requestMatchers("/auth/recover/**").permitAll()
             
-            // Qualquer outra rota (ex: /users/**) exige token válido (401 se não houver)
+          
             .anyRequest().authenticated()
         );
 
-        // Configura o Resource Server para processar o JWT
+      
         http.oauth2ResourceServer(oauth2 -> oauth2
             .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
         );
@@ -44,15 +48,18 @@ public class SecurityConfig {
 
         return http.build();
     }
+    
+
 
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
+        
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
         
-        // Lê as permissões do campo "authorities" do seu JWT
+       
         grantedAuthoritiesConverter.setAuthoritiesClaimName("authorities");
         
-        // Remove prefixos automáticos para bater com o seu seed (ROLE_ADMIN)
+      
         grantedAuthoritiesConverter.setAuthorityPrefix(""); 
 
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
